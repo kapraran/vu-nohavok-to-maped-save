@@ -7,6 +7,17 @@ const ZERO_GUID = "00000000-0000-0000-0000-000000000000";
 
 const toVec3 = (x, y, z) => ({ x, y, z });
 
+const addDefaultRequiredBundles = (levelName, requiredBundles = []) => {
+  const bundles = [
+    `Levels/${levelName}/${levelName}`,
+    "gameconfigurations/game",
+    "Levels/MP_Subway/MP_Subway_Settings_win32",
+    ...requiredBundles,
+  ];
+
+  return [...new Set(bundles)];
+};
+
 /**
  *
  * @param {*} configData
@@ -19,7 +30,10 @@ const createHeader = (configData) => ({
     projectName: configData.projectName,
     mapName: configData.mapName,
     gameModeName: configData.gameModeName,
-    requiredBundles: configData.requiredBundles.reduce(
+    requiredBundles: addDefaultRequiredBundles(
+      configData.mapName,
+      configData.requiredBundles
+    ).reduce(
       (acc, key) => ({
         ...acc,
         [key]: true,
