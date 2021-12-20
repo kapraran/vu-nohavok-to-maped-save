@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "got": "^11.8.3",
+    "lua-in-js": "^2.2.0",
+    "quaternion": "^1.2.1",
+    "uuid": "^8.3.2"
+  }
+}
