@@ -1,5 +1,5 @@
 const { readFile } = require("fs").promises;
-const havokLTData = require('../assets/data.json')
+const havokLTData = require('../../assets/data.json')
 
 const regexKeyLine = /\['(.*)'\] = {/i;
 const regexTransformLine =

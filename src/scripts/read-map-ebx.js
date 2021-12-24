@@ -1,7 +1,7 @@
 const { resolve } = require("path");
-const { EBX_JSON_PATH } = require("../config/config");
+const { EBX_JSON_PATH } = require("../../config/config");
 const { readFile } = require("fs").promises;
-const guidDict = require("../assets/guidDictionary.json");
+const guidDict = require("../../assets/guidDictionary.json");
 const Quaternion = require("quaternion");
 
 const extraXYZFromEbxObject = (obj) =>

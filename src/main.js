@@ -2,7 +2,7 @@ const { resolve } = require("path");
 const { readHavokLuaFile } = require("./scripts/read-havok-lua");
 const { readMapEbx } = require("./scripts/read-map-ebx");
 const { createSave } = require("./scripts/create-save");
-const saveFilesData = require("./config/saveFiles");
+const saveFilesData = require("../config/saveFiles");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const argv = yargs(hideBin(process.argv)).argv;
@@ -12,7 +12,7 @@ async function main() {
   //   resolve(__dirname, "assets/havok.lua")
   // );
 
-  havokTransforms = require(resolve(__dirname, "./assets/data.json"));
+  havokTransforms = require(resolve(__dirname, "../assets/data.json"));
 
   let saveFilesDataToUse = saveFilesData;
 
@@ -28,7 +28,7 @@ async function main() {
     const items = await readMapEbx(havokTransforms, saveFileConfigData);
     const saveFilePath = resolve(
       __dirname,
-      `saves/${saveFileConfigData.projectName}.json`
+      `../saves/${saveFileConfigData.projectName}.json`
     );
 
     await createSave(saveFileConfigData, items, saveFilePath, argv.minifySave);
