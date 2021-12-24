@@ -1,8 +1,12 @@
 {
+  "name": "vu-nohavok-to-maped-save",
+  "version": "1.0.0",
+  "author": {
+    "email": "nikos@kapraran.dev",
+    "name": "Nikos Kapraras",
+    "url": "https://kapraran.dev"
+  },
   "dependencies": {
-    "got": "^11.8.3",
-    "lua-in-js": "^2.2.0",
-    "quaternion": "^1.2.1",
     "uuid": "^8.3.2",
     "yargs": "^17.3.1"
   },

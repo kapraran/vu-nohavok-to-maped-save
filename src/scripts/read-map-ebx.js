@@ -3,7 +3,7 @@ const { EBX_PATH, EBX_JSON_PATH } = require('../../config/config');
 const { readFile } = require('fs').promises;
 const { existsSync } = require('fs');
 const guidDict = require('../../assets/guidDictionary.json');
-const Quaternion = require('quaternion');
+// const Quaternion = require('quaternion');
 
 const extraXYZFromEbxObject = (obj) =>
   Object.keys(obj).reduce(
