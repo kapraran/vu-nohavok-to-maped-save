@@ -1,7 +1,7 @@
 const { writeFile } = require("fs").promises;
 const { v4 } = require("uuid");
 
-const uuidv4 = v4;
+const randomGUID = v4;
 
 const ZERO_GUID = "00000000-0000-0000-0000-000000000000";
 
@@ -45,7 +45,7 @@ const createHeader = (configData) => ({
 
 const createDataItem = (itemData) => ({
   origin: 2,
-  guid: uuidv4(),
+  guid: randomGUID(),
   name: itemData.assetName,
   variation: itemData.variation,
   overrides: {},

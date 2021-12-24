@@ -126,11 +126,11 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
       (line) => line["$type"] === "GroupHavokAsset"
     );
 
-    havokTransformsKeys.push(groupHavokAsset["$fields"]["Name"]["$value"].toLowerCase())
-
     if (staticModelGroupEntityData === undefined) {
       throw new Error("Could not find 'staticModelGroupEntityData'!");
     }
+
+    havokTransformsKeys.push(groupHavokAsset["$fields"]["Name"]["$value"].toLowerCase())
 
     memberDatas = [
       ...memberDatas,
