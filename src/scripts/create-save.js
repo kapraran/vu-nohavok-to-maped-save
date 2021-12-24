@@ -1,17 +1,17 @@
-const { writeFile } = require("fs").promises;
-const { v4 } = require("uuid");
+const { writeFile } = require('fs').promises;
+const { v4 } = require('uuid');
 
 const randomGUID = v4;
 
-const ZERO_GUID = "00000000-0000-0000-0000-000000000000";
+const ZERO_GUID = '00000000-0000-0000-0000-000000000000';
 
 const toVec3 = (x, y, z) => ({ x, y, z });
 
 const addDefaultRequiredBundles = (levelName, requiredBundles = []) => {
   const bundles = [
     `Levels/${levelName}/${levelName}`,
-    "gameconfigurations/game",
-    "Levels/MP_Subway/MP_Subway_Settings_win32",
+    'gameconfigurations/game',
+    'Levels/MP_Subway/MP_Subway_Settings_win32',
     ...requiredBundles,
   ];
 
@@ -50,21 +50,21 @@ const createDataItem = (itemData) => ({
   variation: itemData.variation,
   overrides: {},
   blueprintCtrRef: {
-    typeName: "ObjectBlueprint",
+    typeName: 'ObjectBlueprint',
     name: itemData.assetName,
     partitionGuid: itemData.partitionGuid.toUpperCase(),
     instanceGuid: itemData.instanceGuid.toUpperCase(),
   },
   transform: itemData.transform,
   parentData: {
-    typeName: "custom_root",
+    typeName: 'custom_root',
     guid: ZERO_GUID,
     primaryInstanceGuid: ZERO_GUID,
     partitionGuid: ZERO_GUID,
   },
   originalRef: {
-    partitionGuid: "nil",
-    instanceGuid: "nil",
+    partitionGuid: 'nil',
+    instanceGuid: 'nil',
   },
 });
 
@@ -78,8 +78,8 @@ async function createSave(configData, itemsData, filepath, minify = false) {
     ...createData(itemsData),
   };
 
-  const json = JSON.stringify(saveFileData, null, minify ? 0: 2);
-  await writeFile(filepath, json, "utf8");
+  const json = JSON.stringify(saveFileData, null, minify ? 0 : 2);
+  await writeFile(filepath, json, 'utf8');
 }
 
 module.exports = {

@@ -1,14 +1,14 @@
-const { resolve } = require("path");
-const { EBX_JSON_PATH } = require("../../config/config");
-const { readFile } = require("fs").promises;
-const guidDict = require("../../assets/guidDictionary.json");
-const Quaternion = require("quaternion");
+const { resolve } = require('path');
+const { EBX_JSON_PATH } = require('../../config/config');
+const { readFile } = require('fs').promises;
+const guidDict = require('../../assets/guidDictionary.json');
+const Quaternion = require('quaternion');
 
 const extraXYZFromEbxObject = (obj) =>
   Object.keys(obj).reduce(
     (acc, key) => ({
       ...acc,
-      [key]: obj[key]["$value"],
+      [key]: obj[key]['$value'],
     }),
     {}
   );
@@ -23,10 +23,10 @@ const ebxTransformToLT = (ebxTrans) => {
   //   {}
   // );
 
-  const left = extraXYZFromEbxObject(ebxTrans.right["$value"]);
-  const up = extraXYZFromEbxObject(ebxTrans.up["$value"]);
-  const forward = extraXYZFromEbxObject(ebxTrans.forward["$value"]);
-  const trans = extraXYZFromEbxObject(ebxTrans.trans["$value"]);
+  const left = extraXYZFromEbxObject(ebxTrans.right['$value']);
+  const up = extraXYZFromEbxObject(ebxTrans.up['$value']);
+  const forward = extraXYZFromEbxObject(ebxTrans.forward['$value']);
+  const trans = extraXYZFromEbxObject(ebxTrans.trans['$value']);
 
   return {
     left,
@@ -57,24 +57,23 @@ const havokTransformToLT = (havokTrans) => {
 };
 
 const resolveVariations = (memberData) => {
-  const instanceCount = memberData["InstanceCount"]["$value"];
-  const variations = memberData["InstanceObjectVariation"]["$value"];
+  const instanceCount = memberData['InstanceCount']['$value'];
+  const variations = memberData['InstanceObjectVariation']['$value'];
 
   return variations.length < 1 ? new Array(instanceCount).fill(0) : variations;
 };
 
 const resolveAssetName = (partitionGuid) =>
   guidDict.hasOwnProperty(partitionGuid)
-    ? guidDict[partitionGuid].replaceAll("\\", "/")
+    ? guidDict[partitionGuid].replaceAll('\\', '/')
     : undefined;
 
 const resolveTransforms = (memberData, allHavokTransforms, transformIndex) => {
-  const instanceCount = memberData["InstanceCount"]["$value"];
-  const ebxTransforms = memberData["InstanceTransforms"]["$value"];
+  const instanceCount = memberData['InstanceCount']['$value'];
+  const ebxTransforms = memberData['InstanceTransforms']['$value'];
 
   // if they are defined we use those
-  if (ebxTransforms.length > 0)
-    return ebxTransforms.map((t) => ebxTransformToLT(t));
+  if (ebxTransforms.length > 0) return ebxTransforms.map((t) => ebxTransformToLT(t));
 
   const transforms = allHavokTransforms.slice(
     transformIndex.value,
@@ -86,7 +85,7 @@ const resolveTransforms = (memberData, allHavokTransforms, transformIndex) => {
 };
 
 const resolveAssetInfo = async (memberData) => {
-  const partitionGuid = memberData["MemberType"]["$value"]["$partitionGuid"];
+  const partitionGuid = memberData['MemberType']['$value']['$partitionGuid'];
 
   const ebxSubPath = guidDict[partitionGuid];
 
@@ -97,17 +96,14 @@ const resolveAssetInfo = async (memberData) => {
       instanceGuid: undefined,
     };
 
-  const fullPath = resolve(
-    EBX_JSON_PATH,
-    `${ebxSubPath.replaceAll("\\", "/")}.json`
-  );
-  const contents = await readFile(fullPath, "utf8");
+  const fullPath = resolve(EBX_JSON_PATH, `${ebxSubPath.replaceAll('\\', '/')}.json`);
+  const contents = await readFile(fullPath, 'utf8');
   const contentsJson = JSON.parse(contents);
 
   return {
-    assetName: contentsJson["$name"],
-    partitionGuid: contentsJson["$guid"],
-    instanceGuid: contentsJson["$primaryInstance"],
+    assetName: contentsJson['$name'],
+    partitionGuid: contentsJson['$guid'],
+    instanceGuid: contentsJson['$primaryInstance'],
   };
 };
 
@@ -116,25 +112,25 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
   const havokTransformsKeys = [];
   for (const filename of saveFileConfigData.ebxFiles) {
     const fullEbxPath = resolve(EBX_JSON_PATH, `${filename}.json`);
-    const ebxJson = JSON.parse(await readFile(fullEbxPath, "utf8"));
+    const ebxJson = JSON.parse(await readFile(fullEbxPath, 'utf8'));
 
-    const staticModelGroupEntityData = ebxJson["$instances"].find(
-      (line) => line["$type"] === "StaticModelGroupEntityData"
+    const staticModelGroupEntityData = ebxJson['$instances'].find(
+      (line) => line['$type'] === 'StaticModelGroupEntityData'
     );
 
-    const groupHavokAsset = ebxJson["$instances"].find(
-      (line) => line["$type"] === "GroupHavokAsset"
+    const groupHavokAsset = ebxJson['$instances'].find(
+      (line) => line['$type'] === 'GroupHavokAsset'
     );
 
     if (staticModelGroupEntityData === undefined) {
       throw new Error("Could not find 'staticModelGroupEntityData'!");
     }
 
-    havokTransformsKeys.push(groupHavokAsset["$fields"]["Name"]["$value"].toLowerCase())
+    havokTransformsKeys.push(groupHavokAsset['$fields']['Name']['$value'].toLowerCase());
 
     memberDatas = [
       ...memberDatas,
-      ...staticModelGroupEntityData["$fields"]["MemberDatas"]["$value"],
+      ...staticModelGroupEntityData['$fields']['MemberDatas']['$value'],
     ];
   }
 
@@ -147,21 +143,18 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
   const transformIndex = { value: 0 };
   let allAssetData = await Promise.all(
     memberDatas.map(async (memberData, index) => {
-      const partitionGuid =
-        memberData["MemberType"]["$value"]["$partitionGuid"];
+      const partitionGuid = memberData['MemberType']['$value']['$partitionGuid'];
 
       const currIndex = transformIndex.value;
-      if (memberData["InstanceTransforms"]["$value"].length < 1)
-        transformIndex.value += memberData["InstanceCount"]["$value"];
+      if (memberData['InstanceTransforms']['$value'].length < 1)
+        transformIndex.value += memberData['InstanceCount']['$value'];
 
       const assetInfo = await resolveAssetInfo(memberData);
 
       return {
         partitionGuid,
-        instanceGuid:
-          assetInfo.instanceGuid ||
-          memberData["MemberType"]["$value"]["$instanceGuid"],
-        instanceCount: memberData["InstanceCount"]["$value"],
+        instanceGuid: assetInfo.instanceGuid || memberData['MemberType']['$value']['$instanceGuid'],
+        instanceCount: memberData['InstanceCount']['$value'],
         variations: resolveVariations(memberData),
         assetName: assetInfo.assetName || resolveAssetName(partitionGuid),
         transforms: resolveTransforms(memberData, allHavokTransforms, {
@@ -174,15 +167,13 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
   allAssetData = allAssetData.filter((d) => d.assetName !== undefined);
 
   const flattenAssetData = allAssetData.reduce((acc, assetData) => {
-    const thisAssetArr = new Array(assetData.instanceCount)
-      .fill(undefined)
-      .map((_, i) => ({
-        assetName: assetData.assetName,
-        partitionGuid: assetData.partitionGuid,
-        instanceGuid: assetData.instanceGuid,
-        variation: assetData.variations[i],
-        transform: assetData.transforms[i],
-      }));
+    const thisAssetArr = new Array(assetData.instanceCount).fill(undefined).map((_, i) => ({
+      assetName: assetData.assetName,
+      partitionGuid: assetData.partitionGuid,
+      instanceGuid: assetData.instanceGuid,
+      variation: assetData.variations[i],
+      transform: assetData.transforms[i],
+    }));
 
     return [...acc, ...thisAssetArr];
   }, []);

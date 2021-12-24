@@ -1,4 +1,4 @@
 module.exports = {
-  EBX_JSON_PATH: "",
-  EBX_PATH: "",
+  EBX_JSON_PATH: '',
+  EBX_PATH: '',
 };

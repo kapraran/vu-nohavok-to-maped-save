@@ -1,9 +1,8 @@
-const { readFile } = require("fs").promises;
-const havokLTData = require('../../assets/data.json')
+const { readFile } = require('fs').promises;
+const havokLTData = require('../../assets/data.json');
 
 const regexKeyLine = /\['(.*)'\] = {/i;
-const regexTransformLine =
-  /{ { (.*), (.*), (.*), (.*) }, { (.*), (.*), (.*) } }/i;
+const regexTransformLine = /{ { (.*), (.*), (.*), (.*) }, { (.*), (.*), (.*) } }/i;
 
 /**
  *
@@ -31,8 +30,8 @@ const getTransformFromLine = (line) => {
  * @returns
  */
 const readHavokLuaFile = async (srcPath) => {
-  const havokLua = await readFile(srcPath, "utf8");
-  const havokLuaLines = havokLua.split("\n").map((line) => line.trim());
+  const havokLua = await readFile(srcPath, 'utf8');
+  const havokLuaLines = havokLua.split('\n').map((line) => line.trim());
 
   const havokTransforms = {};
   let latestKey = undefined;
@@ -43,8 +42,7 @@ const readHavokLuaFile = async (srcPath) => {
     } else if (latestKey !== undefined && line.match(regexTransformLine)) {
       const transform = getTransformFromLine(line);
 
-      if (!havokTransforms.hasOwnProperty(latestKey))
-        havokTransforms[latestKey] = [];
+      if (!havokTransforms.hasOwnProperty(latestKey)) havokTransforms[latestKey] = [];
 
       havokTransforms[latestKey].push(transform);
     }
