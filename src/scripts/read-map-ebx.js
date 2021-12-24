@@ -1,6 +1,7 @@
 const { resolve } = require('path');
-const { EBX_JSON_PATH } = require('../../config/config');
+const { EBX_PATH, EBX_JSON_PATH } = require('../../config/config');
 const { readFile } = require('fs').promises;
+const { existsSync } = require('fs');
 const guidDict = require('../../assets/guidDictionary.json');
 const Quaternion = require('quaternion');
 
@@ -97,14 +98,32 @@ const resolveAssetInfo = async (memberData) => {
     };
 
   const fullPath = resolve(EBX_JSON_PATH, `${ebxSubPath.replaceAll('\\', '/')}.json`);
-  const contents = await readFile(fullPath, 'utf8');
-  const contentsJson = JSON.parse(contents);
 
-  return {
-    assetName: contentsJson['$name'],
-    partitionGuid: contentsJson['$guid'],
-    instanceGuid: contentsJson['$primaryInstance'],
-  };
+  if (existsSync(fullPath)) {
+    const contents = await readFile(fullPath, 'utf8');
+    const contentsJson = JSON.parse(contents);
+
+    return {
+      assetName: contentsJson['$name'],
+      partitionGuid: contentsJson['$guid'],
+      instanceGuid: contentsJson['$primaryInstance'],
+    };
+  } else {
+    const ebxPath = resolve(EBX_PATH, `${ebxSubPath}.txt`);
+    const contents = await readFile(ebxPath, 'utf8');
+
+    const instanceGuid = contents
+      .split('\n')
+      .find((line) => line.match(/\#primary instance/i))
+      .split(' ')[1]
+      .toLowerCase();
+
+    return {
+      assetName: ebxSubPath,
+      partitionGuid,
+      instanceGuid,
+    };
+  }
 };
 
 const readMapEbx = async (havokTransforms, saveFileConfigData) => {
@@ -122,11 +141,11 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
       (line) => line['$type'] === 'GroupHavokAsset'
     );
 
+    havokTransformsKeys.push(groupHavokAsset['$fields']['Name']['$value'].toLowerCase());
+
     if (staticModelGroupEntityData === undefined) {
       throw new Error("Could not find 'staticModelGroupEntityData'!");
     }
-
-    havokTransformsKeys.push(groupHavokAsset['$fields']['Name']['$value'].toLowerCase());
 
     memberDatas = [
       ...memberDatas,
@@ -150,6 +169,11 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
         transformIndex.value += memberData['InstanceCount']['$value'];
 
       const assetInfo = await resolveAssetInfo(memberData);
+      const assetName = assetInfo.assetName || resolveAssetName(partitionGuid);
+
+      if (assetName === undefined) {
+        console.warn(`Missing asset information for "${partitionGuid}"`);
+      }
 
       return {
         partitionGuid,
