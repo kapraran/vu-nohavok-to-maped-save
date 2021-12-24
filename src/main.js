@@ -12,15 +12,18 @@ async function main() {
   //   resolve(__dirname, "assets/havok.lua")
   // );
 
-  havokTransforms = require(resolve(__dirname, '../assets/data.json'));
+  const havokTransforms = require(resolve(__dirname, '../assets/data.json'));
 
   let saveFilesDataToUse = saveFilesData;
 
-  if (argv.tryFixMissingAssets) console.log('yes i will');
+  if (argv.fixMissingAssets) console.log('TODO fixMissingAssets');
 
   // if you want to create a save for a single project
   // uncomment the next line an put the correct project name
-  // saveFilesDataToUse = [saveFilesData.find(d => d.projectName === 'XP5_003 Havok MapEd Save')]
+  if (argv.project) {
+    const saveFileConfigData = saveFilesData.find((d) => d.projectName === argv.project);
+    if (saveFileConfigData !== undefined) saveFilesDataToUse = [saveFileConfigData];
+  }
 
   for (const saveFileConfigData of saveFilesDataToUse) {
     console.log(saveFileConfigData.projectName);
@@ -28,7 +31,7 @@ async function main() {
     const items = await readMapEbx(havokTransforms, saveFileConfigData);
     const saveFilePath = resolve(__dirname, `../saves/${saveFileConfigData.projectName}.json`);
 
-    await createSave(saveFileConfigData, items, saveFilePath, argv.minifySave);
+    await createSave(saveFileConfigData, items, saveFilePath, argv.minify);
   }
 }
 
