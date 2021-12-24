@@ -6,10 +6,10 @@ const saveFilesData = require("./config/saveFiles");
 
 async function main() {
   // const havokTransforms = await readHavokLuaFile(
-  //   resolve(__dirname, "havok.lua")
+  //   resolve(__dirname, "assets/havok.lua")
   // );
 
-  havokTransforms = require(resolve(__dirname, "./data.json"))
+  havokTransforms = require(resolve(__dirname, "./assets/data.json"))
 
   let saveFilesDataToUse = saveFilesData
 
