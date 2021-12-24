@@ -17,12 +17,12 @@ async function main() {
 
   let saveFilesDataToUse = saveFilesData;
 
-  if (argv.map && argv.mode) {
+  if (argv.map) {
     saveFilesDataToUse = [
       {
         projectName: `${argv.map} Havok MapEd Save`,
         mapName: argv.map,
-        gameModeName: argv.mode,
+        gameModeName: argv.mode || 'ConquestLarge0',
         ebxFiles: [`Levels/${argv.map}/${argv.map}`],
       },
     ];
