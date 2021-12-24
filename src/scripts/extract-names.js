@@ -20,7 +20,7 @@ const extractNameFromsEbx = async (relPathToFile) => {
       const [, assetData] = line.split(' ');
 
       const parts = assetData.split('/');
-      const name = parts.join('/');
+      const name = parts.slice(0, parts.length - 1).join('/');
 
       const possiblePaths = [resolve(EBX_PATH, `${name}.txt`), resolve(EBX_PATH, `${name}_D.txt`)];
 
@@ -32,19 +32,22 @@ const extractNameFromsEbx = async (relPathToFile) => {
 
         if (guidDictionary.hasOwnProperty(partitionGuid)) return;
 
-        console.log(`"${partitionGuid.toLowerCase()}" : "${name}"`);
+        console.log(
+          `Adding missing asset information for "${partitionGuid.toLowerCase()}" ("${name}")`
+        );
         guidDictionary[partitionGuid.toLowerCase()] = name;
         break;
       }
     })
   );
 
-  if (Object.keys(guidDictionary).length === startingKeysLen) {
-    console.log('nothing to update');
+  const keysDiff = Object.keys(guidDictionary).length - startingKeysLen;
+  if (keysDiff === 0) {
+    console.log('No new assets found to add');
     return;
   }
 
-  console.log('updating guidDict file');
+  console.log(`Updating 'guidDictionary.json' file with ${keysDiff} new assets`);
   await writeFile(
     resolve(__dirname, '../../assets/guidDictionary.json'),
     JSON.stringify(guidDictionary, null, 2),
