@@ -1,3 +1,4 @@
 node_modules
 rime-dump
 saves/*.json
+config/config.js

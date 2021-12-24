@@ -1,5 +1,5 @@
 const { resolve } = require("path");
-const { localEbxJsonPath } = require("../config/config");
+const { EBX_JSON_PATH } = require("../config/config");
 const { readFile } = require("fs").promises;
 const guidDict = require("../guidDictionary.json");
 const Quaternion = require("quaternion");
@@ -98,7 +98,7 @@ const resolveAssetInfo = async (memberData) => {
     };
 
   const fullPath = resolve(
-    localEbxJsonPath,
+    EBX_JSON_PATH,
     `${ebxSubPath.replaceAll("\\", "/")}.json`
   );
   const contents = await readFile(fullPath, "utf8");
@@ -115,7 +115,7 @@ const readMapEbx = async (havokTransforms, saveFileConfigData) => {
   let memberDatas = [];
   const havokTransformsKeys = [];
   for (const filename of saveFileConfigData.ebxFiles) {
-    const fullEbxPath = resolve(localEbxJsonPath, `${filename}.json`);
+    const fullEbxPath = resolve(EBX_JSON_PATH, `${filename}.json`);
     const ebxJson = JSON.parse(await readFile(fullEbxPath, "utf8"));
 
     const staticModelGroupEntityData = ebxJson["$instances"].find(
