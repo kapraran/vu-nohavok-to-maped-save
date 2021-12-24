@@ -5,6 +5,7 @@ const { createSave } = require('./scripts/create-save');
 const saveFilesData = require('../config/saveFiles');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const { extractNameFromsEbx } = require('./scripts/extract-names');
 const argv = yargs(hideBin(process.argv)).argv;
 
 async function main() {
@@ -16,8 +17,6 @@ async function main() {
 
   let saveFilesDataToUse = saveFilesData;
 
-  if (argv.fixMissingAssets) console.log('TODO fixMissingAssets');
-
   // if you want to create a save for a single project
   // uncomment the next line an put the correct project name
   if (argv.project) {
@@ -27,6 +26,10 @@ async function main() {
 
   for (const saveFileConfigData of saveFilesDataToUse) {
     console.log(saveFileConfigData.projectName);
+
+    if (argv.fixMissingAssets) {
+      await extractNameFromsEbx(saveFileConfigData.ebxFiles[0]);
+    }
 
     const items = await readMapEbx(havokTransforms, saveFileConfigData);
     const saveFilePath = resolve(__dirname, `../saves/${saveFileConfigData.projectName}.json`);
