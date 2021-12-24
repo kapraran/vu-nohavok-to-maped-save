@@ -72,13 +72,13 @@ const createData = (itemsData) => ({
   data: itemsData.map((itemData) => createDataItem(itemData)),
 });
 
-async function createSave(configData, itemsData, filepath) {
+async function createSave(configData, itemsData, filepath, minify = false) {
   const saveFileData = {
     ...createHeader(configData),
     ...createData(itemsData),
   };
 
-  const json = JSON.stringify(saveFileData, null, 2);
+  const json = JSON.stringify(saveFileData, null, minify ? 0: 2);
   await writeFile(filepath, json, "utf8");
 }
 

@@ -31,7 +31,7 @@ async function main() {
       `saves/${saveFileConfigData.projectName}.json`
     );
 
-    await createSave(saveFileConfigData, items, saveFilePath);
+    await createSave(saveFileConfigData, items, saveFilePath, argv.minifySave);
   }
 }
 
