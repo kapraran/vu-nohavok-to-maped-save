@@ -17,9 +17,16 @@ async function main() {
 
   let saveFilesDataToUse = saveFilesData;
 
-  // if you want to create a save for a single project
-  // uncomment the next line an put the correct project name
-  if (argv.project) {
+  if (argv.map && argv.mode) {
+    saveFilesDataToUse = [
+      {
+        projectName: `${argv.map} Havok MapEd Save`,
+        mapName: argv.map,
+        gameModeName: argv.mode,
+        ebxFiles: [`Levels/${argv.map}/${argv.map}`],
+      },
+    ];
+  } else if (argv.project) {
     const saveFileConfigData = saveFilesData.find((d) => d.projectName === argv.project);
     if (saveFileConfigData !== undefined) saveFilesDataToUse = [saveFileConfigData];
   }

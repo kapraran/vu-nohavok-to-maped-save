@@ -1,8 +1,8 @@
 module.exports = [
   {
-    projectName: 'ZIBA Havok MapEd Save',
-    mapName: 'XP1_002',
+    projectName: 'MP_Subway Havok MapEd Save',
+    mapName: 'MP_Subway',
     gameModeName: 'Domination0',
-    ebxFiles: ['Levels/XP1_002/XP1_002', 'Levels/XP1_002/CQ_L'],
+    ebxFiles: ['Levels/MP_Subway/MP_Subway'],
   },
 ];
